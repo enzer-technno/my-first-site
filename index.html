@@ -55,20 +55,46 @@
     </div>
 
     <script>
-        const input = document.getElementById('todoInput');
-        const addBtn = document.getElementById('addBtn');
-        const list = document.getElementById('todoList');
+     const input = document.getElementById('todoInput');
+    const addBtn = document.getElementById('addBtn');
+    const list = document.getElementById('todoList');
 
-        addBtn.addEventListener('click', () => {
-            if (input.value.trim() !== "") {
-                const li = document.createElement('li');
-                li.textContent = input.value;
-                // 点击任务可以划掉
-                li.onclick = () => li.style.textDecoration = 'line-through';
-                list.appendChild(li);
-                input.value = ""; // 清空输入框
-            }
+    // --- 1. 页面加载时：从记事本里读出旧任务 ---
+    const savedData = JSON.parse(localStorage.getItem('myTodos')) || [];
+    savedData.forEach(taskText => renderTask(taskText));
+
+    // --- 2. 渲染任务的函数 ---
+    function renderTask(text) {
+        const li = document.createElement('li');
+        li.textContent = text;
+        li.onclick = () => {
+            li.style.textDecoration = 'line-through';
+            // 延时删除：划掉 1 秒后消失并从本地删除
+            setTimeout(() => {
+                li.remove();
+                updateLocalStorage();
+            }, 1000);
+        };
+        list.appendChild(li);
+    }
+
+    // --- 3. 点击添加按钮 ---
+    addBtn.addEventListener('click', () => {
+        if (input.value.trim() !== "") {
+            renderTask(input.value);
+            updateLocalStorage(); // 保存到记事本
+            input.value = "";
+        }
+    });
+
+    // --- 4. 更新“记事本”的核心函数 ---
+    function updateLocalStorage() {
+        const allTasks = [];
+        document.querySelectorAll('#todoList li').forEach(li => {
+            allTasks.push(li.textContent);
         });
+        localStorage.setItem('myTodos', JSON.stringify(allTasks));
+    }
     </script>
 </body>
 </html>
