@@ -44,25 +44,31 @@
 </style>
 </head>
 <body>
-    <h1>你好，世界！</h1>
-    <p>这是我在 VS Code里和Gemini完成的第一个网页</p>
-    <button class="btn" id="myButton">点我试试</button>
-<script>
-    // 1. 找到那个按钮
-    const btn = document.getElementById('myButton');
+    <div class="container">
+        <h1>我的待办清单</h1>
+        <div class="input-group">
+            <input type="text" id="todoInput" placeholder="输入新任务...">
+            <button class="btn" id="addBtn">添加</button>
+        </div>
+        <ul id="todoList">
+            </ul>
+    </div>
 
-    // 2. 给按钮添加“点击”监听器
-    btn.addEventListener('click', function() {
-        // 弹出对话框
-        alert('🎉 恭喜！你已经学会了网页交互！');
+    <script>
+        const input = document.getElementById('todoInput');
+        const addBtn = document.getElementById('addBtn');
+        const list = document.getElementById('todoList');
 
-        // 随机换个背景颜色玩玩
-        const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-        document.body.style.backgroundColor = randomColor;
-        
-        // 修改一下文字内容
-        document.querySelector('p').innerText = "你点击了按钮，魔法发生了！";
-    });
-</script>
+        addBtn.addEventListener('click', () => {
+            if (input.value.trim() !== "") {
+                const li = document.createElement('li');
+                li.textContent = input.value;
+                // 点击任务可以划掉
+                li.onclick = () => li.style.textDecoration = 'line-through';
+                list.appendChild(li);
+                input.value = ""; // 清空输入框
+            }
+        });
+    </script>
 </body>
 </html>
